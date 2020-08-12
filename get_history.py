@@ -1,8 +1,14 @@
 import sqlite3
 from shutil import copyfile
 from pprint import pprint
+from appdirs import user_cache_dir, user_data_dir
+from datetime import datetime
 
-db_file = copyfile(r"C:\Users\banan\AppData\Local\Google\Chrome\User Data\Default\History", "./Chrome_History_Copy_202008120012")
+db_file = copyfile(user_data_dir("Chrome", "Google") + \
+        "\\User Data\\Default\\History", 
+    user_cache_dir("HistoryReview", "Adoria298") + \
+        "\Chrome_History_Copy_" + \
+        str(datetime(2020, 8, 12).now().toordinal()))
 conn = sqlite3.connect(db_file)
 cursor = conn.cursor()
 
