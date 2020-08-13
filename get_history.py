@@ -28,12 +28,19 @@ cursor = conn.cursor()
 #print([description[0] for description in cursor.description]) 
 #pprint(cursor.fetchall())
 
+# number of urls
+cursor.execute("SELECT count(url) FROM urls")
+no_urls = cursor.fetchall()[0][0]
+print(f"There are {no_urls} URLs in the History database.")
 
-cursor.execute("SELECT id, url, visit_count FROM urls LIMIT 20")
+cursor.execute("SELECT id, url, visit_count FROM urls")
 # note how there are less headers
 print([description[0] for description in cursor.description])
-pprint(cursor.fetchall())
+for url in range(no_urls):
+    pprint(cursor.fetchone())
 
 # final actions
 conn.commit()
 conn.close()
+
+#TODO: clear cache folder where old chrome histories are kept
