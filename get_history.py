@@ -22,22 +22,26 @@ cursor = conn.cursor()
 #cursor.execute("SELECT name from sqlite_master WHERE type='table'")
 #pprint(cursor.fetchall())
 
-#cursor.execute("SELECT * FROM urls LIMIT 20")
+cursor.execute("SELECT * FROM urls LIMIT 1")
 # prints the coloumn header
 #TODO: make this output prettier
-#print([description[0] for description in cursor.description]) 
-#pprint(cursor.fetchall())
+print([description[0] for description in cursor.description]) 
+pprint(cursor.fetchall())
 
 # number of urls
 cursor.execute("SELECT count(url) FROM urls")
 no_urls = cursor.fetchall()[0][0]
 print(f"There are {no_urls} URLs in the History database.")
 
-cursor.execute("SELECT id, url, visit_count FROM urls")
+#cursor.execute("SELECT id, url, visit_count FROM urls")
 # note how there are less headers
+#print([description[0] for description in cursor.description])
+#for url in range(no_urls):
+#    pprint(cursor.fetchone())
+
+cursor.execute("SELECT * FROM visits LIMIT 1")
 print([description[0] for description in cursor.description])
-for url in range(no_urls):
-    pprint(cursor.fetchone())
+pprint(cursor.fetchall())
 
 # final actions
 conn.commit()
