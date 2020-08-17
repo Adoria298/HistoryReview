@@ -19,8 +19,20 @@ conn = sqlite3.connect(db_file)
 cursor = conn.cursor()
 
 # find the names of the tables
-#cursor.execute("SELECT name from sqlite_master WHERE type='table'")
-#pprint(cursor.fetchall())
+cursor.execute("SELECT name from sqlite_master WHERE type='table'")
+tables = cursor.fetchall() # list of tuples
+
+# get a data sample and columns from each table
+for table in tables:
+    print(f"Table: {table}")
+    try:
+        cursor.execute(f"SELECT * FROM {table[0]} LIMIT 1")
+        print([description[0] for description in cursor.description])
+        pprint(cursor.fetchall())
+        cursor.execute(f"SELECT count(*) FROM {table[0]} LIMIT 1")
+        print(cursor.fetchone())
+    except sqlite3.OperationalError:
+        print(f"Could not get data for table {table} due to Operational Error.")
 
 cursor.execute("SELECT * FROM urls LIMIT 1")
 # prints the coloumn header
@@ -29,9 +41,9 @@ print([description[0] for description in cursor.description])
 pprint(cursor.fetchall())
 
 # number of urls
-cursor.execute("SELECT count(url) FROM urls")
-no_urls = cursor.fetchall()[0][0]
-print(f"There are {no_urls} URLs in the History database.")
+#cursor.execute("SELECT count(url) FROM urls")
+#no_urls = cursor.fetchall()[0][0]
+#print(f"There are {no_urls} URLs in the URLS database.")
 
 #cursor.execute("SELECT id, url, visit_count FROM urls")
 # note how there are less headers
@@ -39,9 +51,6 @@ print(f"There are {no_urls} URLs in the History database.")
 #for url in range(no_urls):
 #    pprint(cursor.fetchone())
 
-cursor.execute("SELECT * FROM visits LIMIT 1")
-print([description[0] for description in cursor.description])
-pprint(cursor.fetchall())
 
 # final actions
 conn.commit()
