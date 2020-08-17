@@ -14,7 +14,7 @@ db_file = copyfile(user_data_dir("Chrome", "Google") + \
         "\Chrome_History_Copy_" + \
         str(datetime(2020, 8, 12).now().toordinal()))
 
-# set sqlite by connecting to the copied file
+# setup sqlite by connecting to the copied file
 conn = sqlite3.connect(db_file)
 cursor = conn.cursor()
 
@@ -40,23 +40,11 @@ for table in tables:
     except sqlite3.OperationalError:
         print(f"Could not get data for table {table} due to Operational Error.")
 
-#cursor.execute("SELECT * FROM urls LIMIT 1")
-# prints the coloumn header
-#TODO: make this output prettier
-#print([description[0] for description in cursor.description]) 
-#pprint(cursor.fetchall())
-
-# number of urls
-#cursor.execute("SELECT count(url) FROM urls")
-#no_urls = cursor.fetchall()[0][0]
-#print(f"There are {no_urls} URLs in the URLS database.")
-
-#cursor.execute("SELECT id, url, visit_count FROM urls")
-# note how there are less headers
-#print([description[0] for description in cursor.description])
-#for url in range(no_urls):
-#    pprint(cursor.fetchone())
-
+# find a connection between **`visits`** and **`urls`**
+cursor.execute("SELECT urls.url, urls.last_visit_time, visits.id FROM urls, visits WHERE urls.last_visit_time = visits.visit_time") 
+results = cursor.fetchall()
+print(" | ".join((description[0] for description in cursor.description)))
+pprint(results)
 
 # final actions
 conn.commit()
