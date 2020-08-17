@@ -25,8 +25,9 @@ tables = cursor.fetchall() # list of tuples
 # get a data sample and columns from each table
 for table in tables:
     print(f"Table: {table[0]}")
-    try:
+    try: #TODO: more verbose errors
         cursor.execute(f"SELECT * FROM {table[0]} LIMIT 5")
+        #TODO: make below output a function - DRY
         print(" | ".join((description[0] for description in cursor.description)))
         try:
             for row in cursor.fetchall():
@@ -41,6 +42,8 @@ for table in tables:
         print(f"Could not get data for table {table} due to Operational Error.")
 
 # find a connection between **`visits`** and **`urls`**
+#TODO: limit this all sites from 00:00 23rd March 2020 
+## (first Mon. after school closing - schools closed 20th March 2020)
 cursor.execute("SELECT urls.url, urls.last_visit_time, visits.id FROM urls, visits WHERE urls.last_visit_time = visits.visit_time") 
 results = cursor.fetchall()
 print(" | ".join((description[0] for description in cursor.description)))
