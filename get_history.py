@@ -24,21 +24,27 @@ tables = cursor.fetchall() # list of tuples
 
 # get a data sample and columns from each table
 for table in tables:
-    print(f"Table: {table}")
+    print(f"Table: {table[0]}")
     try:
-        cursor.execute(f"SELECT * FROM {table[0]} LIMIT 1")
-        print([description[0] for description in cursor.description])
-        pprint(cursor.fetchall())
+        cursor.execute(f"SELECT * FROM {table[0]} LIMIT 5")
+        print(" | ".join((description[0] for description in cursor.description)))
+        try:
+            for row in cursor.fetchall():
+                #" | ".join((str(col) for col in row))
+                print(" | ".join((str(col) for col in row)))
+        except TypeError:
+            print("Formatting of data could not be done due to type error; printing with pprint.")
+            pprint(cursor.fetchone())
         cursor.execute(f"SELECT count(*) FROM {table[0]} LIMIT 1")
-        print(cursor.fetchone())
+        print("Amount:", cursor.fetchone()[0])
     except sqlite3.OperationalError:
         print(f"Could not get data for table {table} due to Operational Error.")
 
-cursor.execute("SELECT * FROM urls LIMIT 1")
+#cursor.execute("SELECT * FROM urls LIMIT 1")
 # prints the coloumn header
 #TODO: make this output prettier
-print([description[0] for description in cursor.description]) 
-pprint(cursor.fetchall())
+#print([description[0] for description in cursor.description]) 
+#pprint(cursor.fetchall())
 
 # number of urls
 #cursor.execute("SELECT count(url) FROM urls")
