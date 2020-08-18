@@ -40,6 +40,7 @@ cursor.execute("SELECT name from sqlite_master WHERE type='table'")
 tables = cursor.fetchall() # list of tuples
 
 # get a data sample and columns from each table
+print("Sampling tables.")
 for table in tables:
     print(f"Table: {table[0]}")
     try: #TODO: more verbose errors
@@ -59,9 +60,15 @@ for table in tables:
         print(f"Could not get data for table {table} due to Operational Error.")
 
 # find a connection between **`visits`** and **`urls`**
-#TODO: limit this all sites from 00:00 23rd March 2020 
+#TODO: limit this to all sites visited since 00:00 23rd March 2020 
 ## (first Mon. after school closing - schools closed 20th March 2020)
-cursor.execute("SELECT urls.url, urls.last_visit_time, visits.id FROM urls, visits WHERE urls.last_visit_time = visits.visit_time") 
+print("Connecting visits and urls.")
+march23 = datetime(2020, 3, 23, 0, 0, 0, 0)
+condition = f"WHERE urls.last_visit_time = visits.visit_time AND visits.visit_time > {march23.timestamp()} AND urls.url LIKE 'http%' LIMIT 20"
+cursor.execute(f"SELECT DISTINCT count(visits.id) FROM urls, visits {condition}")
+print("Amount:", cursor.fetchone()[0]) # 1st column of 1st row
+cursor.execute(("SELECT DISTINCT urls.url, urls.last_visit_time, visits.id FROM urls, "
+    f"visits {condition}")) 
 results = cursor.fetchall()
 print(" | ".join((description[0] for description in cursor.description)))
 pprint(results)
